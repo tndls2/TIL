@@ -20,8 +20,6 @@
     
      - [https://codegear.tistory.com/86?category=1034916](https://codegear.tistory.com/86?category=1034916)
     
-    [Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/31e84dc8-732e-4ddc-b2fc-1224784ae667/Untitled.png)
-
 - TypeORM 공부
     - **ORM**(Object Relational Mapping, 객체-관계 매핑)
         
@@ -89,3 +87,8 @@
     - **기본 CRUD 작성**
         
          - 관련 글 : [https://medium.com/crocusenergy/nestjs-typeorm-기본-crud-작성하기-69b9640dc826](https://medium.com/crocusenergy/nestjs-typeorm-%EA%B8%B0%EB%B3%B8-crud-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0-69b9640dc826)
+ 
+### [ 활동소감 ]
+
+1. 아직 타입스크립트와 nest에 대한 지식이 부족함을 느낌 → 다음 회의 전까지 계속 공부
+2. typeorm으로 sql을 사용하지 않고 DB의 데이터를 다룰 수 있음을 알게됨
