@@ -395,6 +395,240 @@ public class ApplicationContextExtendsFindTest {
   
   <details>
   <summary>sec5 싱글톤 컨테이너</summary>
+
+**웹 애플리케이션과 싱글톤**
+
+- 대부분의 스프링 애플리케이션 = **웹 애플리케이션** (웹이 아닌 애플리케이션 개발도 얼마든지
+개발 가능) ➡️ 웹 애플리케이션은 보통 여러 고객이 동시에 요청
+    
+    ![5-1](https://user-images.githubusercontent.com/96513157/215772487-44f44c07-4649-4386-b546-4630b356e193.png)
+    
+
+- **AppConfig** (스프링 없는 순수한 DI 컨테이너)
+    - 요청을 할 때마다 객체를 새로 생성
+        
+        ```java
+        public class SingletonTest {
+        	
+        	@Test
+        	@DisplayName("스프링 없는 순수한 DI 컨테이너")
+        	void pureContainer() {
+        			AppConfig appConfig = new AppConfig();
+        			//1. 조회: 호출할 때 마다 객체를 생성
+        			MemberService memberService1 = appConfig.memberService();
+        			
+        			//2. 조회: 호출할 때 마다 객체를 생성
+        			MemberService memberService2 = appConfig.memberService();
+        
+        			//참조값이 다른 것을 확인
+        			System.out.println("memberService1 = " + memberService1); 
+        			System.out.println("memberService2 = " + memberService2);
+              
+        			//memberService1 != memberService2
+              assertThat(memberService1).isNotSameAs(memberService2);
+        	}
+        }
+        ```
+        
+        ➡️ 고객 트래픽이 초당 100이 나오면 초당 100개 객체가 생성되고 소멸됨 (메모리 낭비)
+        
+        ➡️ 해결방안은 해당 객체가 딱 1개만 생성되고, 공유하도록 설계 = **싱글톤 패턴**
+        
+
+### 싱글톤 패턴
+
+- **싱글톤 패턴**
+    - 클래스의 인스턴스가 딱 1개만 생성되는 것을 보장하는 디자인 패턴
+    - 객체 인스턴스 2개 이상 생성하지 못하도록 막아야 됨
+        - **private** 생성자를 사용해서 외부에서 임의로 new 키워드를 사용하지 못하도록 막아야 됨
+    
+    ```java
+    public class SingletonService {
+    
+    	//1. static 영역에 객체를 딱 1개만 생성해둔다.
+    	private static final SingletonService instance = new SingletonService();
+    	
+    	//2. public으로 열어서 객체 인스턴스가 필요하면 이 static 메서드를 통해서만 조회하도록 허용한다.
+      public static SingletonService getInstance() {
+    		return instance;
+    	}
+    
+    	//3. 생성자를 private으로 선언해서 외부에서 new 키워드를 사용한 객체 생성을 못하게 막는다. 
+    	private SingletonService() {
+    	}
+    public void logic() { System.out.println("싱글톤 객체 로직 호출");
+    } }
+    ```
+    
+    1. **static 영역**에 **객체 instance**를 미리 하나 생성해서 올려둠
+    2. 해당 객체 인스턴스가 필요하면 오직 `getInstance()`메서드를 통해서만 조회 가능
+        
+        + 해당 메서드를 호출하면 항상 같은 인스턴스 반환
+        
+    3. 딱 1개의 객체 인스턴스만 존재해야 함 ➡️ 생성자를 **private**으로 막아서 혹시라도 외부에서 `new`키워드로 객체 인스턴스가 생성되는 것을 막음
+        
+        ```java
+        @Test
+        @DisplayName("싱글톤 패턴을 적용한 객체 사용") public void singletonServiceTest() {
+        //private으로 생성자를 막아두었다. 컴파일 오류가 발생한다. //new SingletonService();
+        //1. 조회: 호출할 때 마다 같은 객체를 반환
+        SingletonService singletonService1 = SingletonService.getInstance();
+        //2. 조회: 호출할 때 마다 같은 객체를 반환
+        SingletonService singletonService2 = SingletonService.getInstance();
+        //참조값이 같은 것을 확인
+        System.out.println("singletonService1 = " + singletonService1); System.out.println("singletonService2 = " + singletonService2);
+                // singletonService1 == singletonService2
+                assertThat(singletonService1).isSameAs(singletonService2);
+                singletonService1.logic();
+        }
+        ```
+        
+
+- **싱글톤 패턴 문제점**
+    - 싱글톤 패턴을 구현하는 코드 자체가 많이 들어감
+    - 의존관계상 클라이언트가 구체 클래스에 의존함 (DIP 위반)
+    - 클라이언트가 구체 클래스에 의존함 (OCP 원칙 위반 가능성 높음)
+    - 테스트하기 어려움
+
+### 싱글톤 컨테이너
+
+- 스프링 컨테이너 → 싱글톤 패턴의 문제점 해결 + 객체 인스턴스를 싱글톤(1개만 생성)으로
+관리
+    
+    <aside>
+    💡 지금까지 우리가 학습한 스프링 빈 = 싱글톤으로 관리되는 빈
+    
+    </aside>
+    
+- **싱글톤 컨테이너**
+    - **싱글톤 컨테이너** : 싱글턴 패턴을 적용하지 않아도, 객체 인스턴스를 싱글톤으로 관리
+    - **컨테이너** : 객체를 하나만 생성해서 관리
+    - **스프링 컨테이너** → 싱글톤 컨테이너 역할
+        - **싱글톤 레지스트리** : 싱글톤 객체 생성+관리하는 기능
+        - 싱글턴 패턴의 모든 단점을 해결
+            - 싱글톤 패턴을 위한 지저분한 코드가 들어가지 않아도 됨
+            - DIP, OCP, 테스트, private 생성자로부터 자유롭게 싱글톤 사용 가능
+    
+- 고객의 요청이 올 때마다 객체를 생성하는 것이 아니라, 이미 만들어진 객체를 공유해서 효율적으로 재사용
+    
+    ![5-2](https://user-images.githubusercontent.com/96513157/215772506-b5e6818d-ebb9-4930-96e9-ad85a55154cd.png)
+    
+    스프링 컨테이너 적용 후
+    
+
+### 싱글톤 방식의 주의점
+
+- 객체 인스턴스를 하나만 생성해서 공유하는 **싱글톤 방식**은 여러 클라이언트가 하나의 같은 객체 인스턴스를 공유함
+    
+    ➡️ 싱글톤 객체는 상태를 유지(stateful)하게 설계하면 안됨 
+    
+    ```java
+    package hello.core.singleton;
+    
+    public class StatefulService {
+    
+    		private int price; //상태를 유지하는 필드
+    		
+    		public void order(String name, int price) { 
+    				System.out.println("name = " + name + " price = " + price); 
+    				this.price = price; //문제 지점
+    		}
+        
+    		public int getPrice() {
+              return price;
+    		}
+    }
+    ```
+    
+    ```java
+    public class StatefulServiceTest {
+    
+        @Test
+    		void statefulServiceSingleton() {
+    
+    				ApplicationContext ac = new AnnotationConfigApplicationContext(TestConfig.class);
+            StatefulService statefulService1 = ac.getBean("statefulService",StatefulService.class);
+            StatefulService statefulService2 = ac.getBean("statefulService", StatefulService.class);
+    				
+    				//**ThreadA** : A사용자 10000원 주문
+    				statefulService1.order("userA", 10000);
+    
+    				//**ThreadB** : B사용자 20000원 주문 
+    				statefulService2.order("userB", 20000);
+    
+    				//**ThreadA** : 사용자A 주문 금액 조회
+    				int price = statefulService1.getPrice();
+    				
+    				//**ThreadA**: 사용자A 기대값=10000원, 결과값=20000원 출력
+    				System.out.println("price = " + price);
+            Assertions.assertThat(statefulService1.getPrice()).isEqualTo(20000);
+        }
+    ```
+    
+    - 가정 : ThreadA가 **사용자A** 코드를 호출 & ThreadB가 **사용자B** 코드를 호출
+    - `StatefulService`의 `price`필드 → 공유되는 필드 but 특정 클라이언트가 값 변경함
+    - **사용자A**의 주문금액은 10000원이 되어야 하는데, 20000원이라는 결과 나옴
+        
+        ➡️ 공유필드는 조심해야 함! 스프링 빈은 항상 무상태(stateless)로 설계할 것
+        
+- **무상태(stateless)**로 설계해야 됨
+    - 특정 클라이언트에 의존적인 필드가 있으면 안됨
+    - 특정 클라이언트가 값을 변경할 수 있는 필드가 있으면 안됨
+    - 가급적 읽기만 가능해야 함
+    - 필드 대신에 자바에서 공유되지 않는 지역변수, 파라미터, ThreadLocal 등 사용해야 함
+
+### @Configuration과 바이트코드 조작의 마법
+
+- 스프링 컨테이너 = 싱글톤 레지스트
+    
+    ➡️ 스프링 빈이 싱글톤이 되도록 보장해주어야 함 but 스프링이 자바 코드까지 어떻게 하기는 어려움
+    
+    ➡️ 스프링은 클래스의 바이트코드를 조작하는 라이브러리(CGLIB)를 사용함
+    
+    (`@Configuration`을 적용한 **AppConfig**에 의한 것)
+    
+
+```java
+@Test
+void configurationDeep() {
+      ApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig.class);
+			
+			//AppConfig도 스프링 빈으로 등록된다.
+			AppConfig bean = ac.getBean(AppConfig.class);
+
+			System.out.println("bean = " + bean.getClass());
+			//출력: bean = class hello.core.AppConfig$$EnhancerBySpringCGLIB$$bd479d70
+}
+```
+
+- `AnnotationConfigApplicationContext`에 파라미터로 넘긴 값 → 스프링 빈으로 등록됨
+    
+    ➡️ AppConfig도 스프링 빈이 됨
+    
+- AppConfig 스프링 빈을 조회해서 클래스 정보를 출력한 결과를 보면, 예상과는 다르게 클래스 명에 **xxxCGLIB**가 붙어있음
+    
+    ![5-3](https://user-images.githubusercontent.com/96513157/215772515-ff46e0d5-c37b-4197-9a58-715d0fa26697.png)
+    
+    ➡️ 내가 만든 클래스가 아니라, 스프링이 **바이트코드 조작 라이브러리(CGLIB)**를 사용해서 **AppConfig** 클래스를 상속받은 **임의의 다른 클래스**를 만들고, 그 다른 클래스를 **스프링 빈**으로 등록한 것
+    
+- **AppConfig@CGLIB**에 의해  ****`@Bean`이 붙은 메서드마다 이미 스프링 빈이 존재하면, 존재하는 빈을 반환 & 스프링 빈이 없으면, 생성해서 스프링 빈으로 등록하고 반환하는 코드가 동적으로 만듬
+    
+    ➡️ 덕분에 싱글톤이 보장됨
+    
+
+- **@Configuration을 적용하지 않고, @Bean만 적용하면 어떻게 될까?**
+    - `@Configuration`을 붙이면 바이트코드를 조작하는 CGLIB 기술을 사용해서 **싱글톤**을 보장함
+    - `@Configuration`을 지우고, `@Bean`만 적용하고 똑같이 코드를 실행하면
+        
+        ➡️ 출력 결과 : bean = class hello.core.AppConfig
+        
+    - **AppConfig**가 CGLIB 기술 없이 순수한 **AppConfig**로 스프링 빈에 등록된 것을 확인 가능
+
+<**정리>**
+
+- `@Bean`만 사용해도 스프링 빈으로 등록되지만, 싱글톤을 보장하지 않음
+    - `memberRepository()`처럼 의존관계 주입이 필요해서 메서드를 직접 호출할 때, 싱글톤을 보장하지 않음
+- 스프링 설정 정보는 항상 **@Configuration**을 사용하기 !
   </details>
   
   <details>
