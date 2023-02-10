@@ -441,24 +441,25 @@ public class ApplicationContextExtendsFindTest {
     - 클래스의 인스턴스가 딱 1개만 생성되는 것을 보장하는 디자인 패턴
     - 객체 인스턴스 2개 이상 생성하지 못하도록 막아야 됨
         - **private** 생성자를 사용해서 외부에서 임의로 new 키워드를 사용하지 못하도록 막아야 됨
-    
-    ```java
-    public class SingletonService {
-    
-    	//1. static 영역에 객체를 딱 1개만 생성해둔다.
-    	private static final SingletonService instance = new SingletonService();
-    	
-    	//2. public으로 열어서 객체 인스턴스가 필요하면 이 static 메서드를 통해서만 조회하도록 허용한다.
-      public static SingletonService getInstance() {
-    		return instance;
-    	}
-    
-    	//3. 생성자를 private으로 선언해서 외부에서 new 키워드를 사용한 객체 생성을 못하게 막는다. 
-    	private SingletonService() {
-    	}
-    public void logic() { System.out.println("싱글톤 객체 로직 호출");
-    } }
-    ```
+    - 
+
+```java
+public class SingletonService {
+
+	//1. static 영역에 객체를 딱 1개만 생성해둔다.
+	private static final SingletonService instance = new SingletonService();
+	
+	//2. public으로 열어서 객체 인스턴스가 필요하면 이 static 메서드를 통해서만 조회하도록 허용한다.
+  public static SingletonService getInstance() {
+		return instance;
+	}
+
+	//3. 생성자를 private으로 선언 -> 외부에서 new 키워드 사용하여 객체 생성을 못하게 막음
+	private SingletonService() {
+	}
+public void logic() { System.out.println("싱글톤 객체 로직 호출");
+} }
+```
     
     1. **static 영역**에 **객체 instance**를 미리 하나 생성해서 올려둠
     2. 해당 객체 인스턴스가 필요하면 오직 `getInstance()`메서드를 통해서만 조회 가능
@@ -466,28 +467,29 @@ public class ApplicationContextExtendsFindTest {
         + 해당 메서드를 호출하면 항상 같은 인스턴스 반환
         
     3. 딱 1개의 객체 인스턴스만 존재해야 함 ➡️ 생성자를 **private**으로 막아서 혹시라도 외부에서 `new`키워드로 객체 인스턴스가 생성되는 것을 막음
-        
-        ```java
-        @Test
-@DisplayName("싱글톤 패턴을 적용한 객체 사용") 
-public void singletonServiceTest() {
-//private으로 생성자를 막아두었다. 컴파일 오류가 발생한다. 
-//new SingletonService();
-//1. 조회: 호출할 때 마다 같은 객체를 반환
-SingletonService singletonService1 = SingletonService.getInstance();
-
-//2. 조회: 호출할 때 마다 같은 객체를 반환
-SingletonService singletonService2 = SingletonService.getInstance();
-
-//참조값이 같은 것을 확인
-System.out.println("singletonService1 = " + singletonService1); 
-System.out.println("singletonService2 = " + singletonService2);
-
-// singletonService1 == singletonService2
-assertThat(singletonService1).isSameAs(singletonService2);
-singletonService1.logic();
-}
-        ```
+        3. 
+    
+    ```java
+    @Test
+    @DisplayName("싱글톤 패턴을 적용한 객체 사용") 
+    public void singletonServiceTest() {
+    //private으로 생성자를 막아두었다. 컴파일 오류가 발생한다. 
+    //new SingletonService();
+    //1. 조회: 호출할 때 마다 같은 객체를 반환
+    SingletonService singletonService1 = SingletonService.getInstance();
+    
+    //2. 조회: 호출할 때 마다 같은 객체를 반환
+    SingletonService singletonService2 = SingletonService.getInstance();
+    
+    //참조값이 같은 것을 확인
+    System.out.println("singletonService1 = " + singletonService1); 
+    System.out.println("singletonService2 = " + singletonService2);
+    
+    // singletonService1 == singletonService2
+    assertThat(singletonService1).isSameAs(singletonService2);
+    singletonService1.logic();
+    }
+    ```
         
 
 - **싱글톤 패턴 문제점**
