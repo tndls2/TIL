@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns xmlns:th="http://www.w3.org/1999/xhtml" : th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <h2>Join</h2>
+    <form id="form" th:action="@{join}" method="post">
+        <input type="text" class="form-control" name="name" placeholder="이름">
+        <input type="password" class="form-control" name="password" placeholder="비밀번호">
+        <input type="password" class="form-control" name="passwordCheck" placeholder="비밀번호 재입력">
+        <form th:action="@{/member/join}" method="post">
+            <button type="submit">회원가입</button>
+        </form>
+
+
+    </form>
+</div>
+</body>
