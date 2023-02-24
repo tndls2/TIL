@@ -1,0 +1,42 @@
+<html xmlns xmlns:th="http://www.w3.org/1999/xhtml" : th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+<div class="container">
+    <p>글번호 : [[${halo.boardId}]]</p>
+    <p id="title">제목 : [[${halo.title}]]</p>
+    <p>작성자 : [[${halo.name}]]</p>
+    내용 :
+    <div id="content">
+
+        <textarea readonly="readonly"
+                  class="form-control"
+                  th:text="${halo.content}">
+
+        </textarea>
+
+    </div>
+    <form th:action="@{update}" method="get">
+        <input type="hidden" name="boardId" th:value="${halo.boardId}">
+        <button type="submit">수정</button>
+    </form>
+
+    <form th:action="@{delete}" method="get">
+        <input type="hidden" name="boardId" th:value="${halo.boardId}">
+        <button type="submit">삭제</button>
+    </form>
+
+    <form th:action="@{main}" method="get">
+        <button type="submit">홈</button>
+    </form>
+
+</div>
+</body>
+</html>
