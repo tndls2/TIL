@@ -1,6 +1,4 @@
-https://sites.google.com/ajou.ac.kr/mks
-
-# ~~2022 하계 모각소~~ [종료]
+# 2022 하계 모각소
 ## 👩‍💻 Introduce
 아주대학교 SW중심대학사업 하계 모각소(모여서 각자 소프트웨어 하자)  
 아주나이스 팀의 활동내용 기록입니다.  
@@ -20,13 +18,13 @@ https://sites.google.com/ajou.ac.kr/mks
 - 3차 심사 : 9.29
 
 ## 🏆Result
-- 2022 하계 모각소 우수상 수상
+- 2022 하계 모각소 우수상 수상  
+  [활동내용](https://sites.google.com/ajou.ac.kr/mks/%ED%99%88/2022%EB%85%84-%ED%95%98%EA%B3%84-%EB%AA%A8%EA%B0%81%EC%86%8C/%EC%9A%B0%EC%88%98%EC%95%84%EC%A3%BC%EB%82%98%EC%9D%B4%EC%8A%A4?authuser=0)
 - 2022 관광데이터 활용 공모전 장려상 수상
 
 
 ------------
-------------
-# 2022 동계 모각소 [진행중]
+# 2022 동계 모각소
 ## 👩‍💻 Introduce
 아주대학교 SW중심대학사업 동계 모각소(모여서 각자 소프트웨어 하자)  
 테레사 팀의 활동내용 기록입니다.  
@@ -45,3 +43,5 @@ https://sites.google.com/ajou.ac.kr/mks
 4. 팀원들과 각자 공부하는 언어 공부한 내용 공유 (golang, spring, rust)
 
 ## 🏆Result
+- 2022 동계 모각소 장려상 수상    
+[활동내용](https://sites.google.com/ajou.ac.kr/mks/%ED%99%88/2022%EB%85%84-%EB%8F%99%EA%B3%84-%EB%AA%A8%EA%B0%81%EC%86%8C/22-%EC%9E%A5%EB%A0%A47%ED%85%8C%EB%A0%88%EC%82%AC?authuser=0)   
